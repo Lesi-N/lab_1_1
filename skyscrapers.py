@@ -1,6 +1,6 @@
 '''
 Checks if game board solution is correct
-Github repository:
+Github repository: https://github.com/Lesi-N/lab_1_1.git
 '''
 
 def read_input(path: str):
@@ -9,7 +9,7 @@ def read_input(path: str):
     Return list of str.
 
     >>> read_input("check.txt")
-    ['***21**', '452453*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***']
+    ['***21**', '412453*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***']
     """
     file = open(path, mode='r', encoding='utf-8').readlines()
     lines = [w.strip() for w in file]
@@ -31,7 +31,7 @@ def left_to_right_check(input_line: str, pivot: int):
     >>> left_to_right_check("452453*", 5)
     False
     >>> left_to_right_check("132354*", 3)
-    
+    True
     """
     row = input_line[1:6]
     visible = [1]
