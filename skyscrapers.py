@@ -31,7 +31,7 @@ def left_to_right_check(input_line: str, pivot: int):
     >>> left_to_right_check("452453*", 5)
     False
     >>> left_to_right_check("132354*", 3)
-
+    
     """
     row = input_line[1:6]
     visible = [1]
@@ -103,3 +103,72 @@ def check_uniqueness_in_rows(board: list):
             if rep > 1:
                 return False
     return True
+
+
+def check_horizontal_visibility(board: list):
+    """
+    Check row-wise visibility (left-right and vice versa)
+
+    Return True if all horizontal hints are satisfiable,
+     i.e., for line 412453* , hint is 4, and 1245 are the four buildings
+      that could be observed from the hint looking to the right.
+
+    >>> check_horizontal_visibility(['***21**', '412453*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***'])
+    True
+    >>> check_horizontal_visibility(['***21**', '452453*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***'])
+    False
+    >>> check_horizontal_visibility(['***21**', '452413*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***'])
+    False
+    """
+    left = True
+    right = True
+    for row in board[1:6]:
+        if row[0] != '*':
+            left = left_to_right_check(row, int(row[0]))
+        if row[-1] != '*':
+            right = right_to_left_check(row, int(row[-1]))
+        if left and right:
+            continue
+        else:
+            return False
+    return True
+
+def check_columns(board: list):
+    """
+    Check column-wise compliance of the board for uniqueness (buildings of unique height) and visibility (top-bottom and vice versa).
+
+    Same as for horizontal cases, but aggregated in one function for vertical case, i.e. columns.
+
+    >>> check_columns(['***21**', '412453*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***'])
+    True
+    >>> check_columns(['***21**', '412453*', '423145*', '*543215', '*35214*', '*41232*', '*2*1***'])
+    False
+    >>> check_columns(['***21**', '412553*', '423145*', '*543215', '*35214*', '*41532*', '*2*1***'])
+    False
+    """
+    columns = ['', '', '', '', '', '', '']
+    for row in board:
+        for i in range(len(row)):
+            columns[i] += row[i]
+    if not check_uniqueness_in_rows(columns):
+        return False
+    return check_horizontal_visibility(columns)
+
+
+def check_skyscrapers(input_path: str):
+    """
+    Main function to check the status of skyscraper game board.
+    Return True if the board status is compliant with the rules,
+    False otherwise.
+
+    >>> check_skyscrapers("check.txt")
+    True
+    """
+    if check_columns(read_input(input_path)) and check_not_finished_board(read_input(input_path)) and \
+        check_horizontal_visibility(read_input(input_path)) and check_uniqueness_in_rows(read_input(input_path)):
+        return True
+    return False
+
+
+if __name__ == "__main__":
+    print(check_skyscrapers("check.txt"))
